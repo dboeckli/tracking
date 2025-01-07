@@ -1,6 +1,16 @@
 spring:
   application:
     name: tracking
+  kafka:
+    # See: https://docs.conduktor.io/desktop/kafka-cluster-connection/setting-up-a-connection-to-kafka/connecting-to-kafka-running-on-windows-wsl-2/#two-ways-to-fix-this
+    # and: https://stackoverflow.com/questions/46158296/kafka-broker-not-available-at-starting
+    bootstrap-servers: "[::1]:9092"
+
+    admin:
+      properties:
+        bootstrap.servers: "[::1]:9092"
+    consumer:
+      bootstrap-servers: "[::1]:9092"
   docker:
     compose:
       enabled: false
@@ -26,19 +36,3 @@ management:
 logging:
   level:
     org.zalando.logbook: TRACE
-
-logbook:
-  filter:
-    enabled: true
-  format:
-    style: http
-  obfuscate:
-    headers:
-      - Authorization
-      - X-Secret
-    parameters:
-      - access_token
-      - password
-  predicate:
-    exclude:
-      - path: /actuator/health
