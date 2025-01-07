@@ -1,12 +1,10 @@
-package ch.dboeckli.template;
-// TODO: RENAME PACKAGE
+package dev.lydtech.tracking;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-// TODO: RENAME ME
-class Spring6TemplateApplicationTest {
+class TrackingApplicationTest {
 
     @Test
     void contextLoads() {
