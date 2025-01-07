@@ -185,6 +185,7 @@
                         <configuration>
                             <portNames>
                                 <portName>tomcat.http.port</portName>
+                                <portName>jmx.server.port</portName>
                             </portNames>
                         </configuration>
                     </execution>
@@ -253,6 +254,7 @@
                                 <argument>--server.port=${tomcat.http.port}</argument>
                                 <argument>--spring.cloud.kubernetes.enabled=false</argument>
                             </arguments>
+                            <jmxPort>${jmx.server.port}</jmxPort>
                         </configuration>
                     </execution>
 
