@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TrackingApplication with docker" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="docker" />
+    <module name="spring-6-project-template" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="dev.lydtech.tracking.TrackingApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

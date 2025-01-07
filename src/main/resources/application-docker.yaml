@@ -5,7 +5,6 @@ spring:
     # See: https://docs.conduktor.io/desktop/kafka-cluster-connection/setting-up-a-connection-to-kafka/connecting-to-kafka-running-on-windows-wsl-2/#two-ways-to-fix-this
     # and: https://stackoverflow.com/questions/46158296/kafka-broker-not-available-at-starting
     bootstrap-servers: "[::1]:9092"
-
     admin:
       properties:
         bootstrap.servers: "[::1]:9092"
@@ -13,9 +12,11 @@ spring:
       bootstrap-servers: "[::1]:9092"
   docker:
     compose:
-      enabled: false
+      enabled: true
       stop:
         command: down
+      skip:
+        in-tests: false  
 
 management:
   health:
@@ -32,7 +33,3 @@ management:
       probes:
         enabled: true
       show-details: always
-
-logging:
-  level:
-    org.zalando.logbook: TRACE
