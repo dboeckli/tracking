@@ -24,6 +24,7 @@ public class TrackingService {
             .orderId(dispatchPreparing.getOrderId())
             .status(TrackingStatus.PREPARING)
             .build();
+        
         kafkaProducer.send(TRACKING_STATUS_TOPIC, trackingStatusUpdated).get();
     }
     
