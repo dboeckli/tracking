@@ -10,6 +10,9 @@ spring:
         bootstrap.servers: "[::1]:9092"
     consumer:
       bootstrap-servers: "[::1]:9092"
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
   docker:
     compose:
       enabled: true
