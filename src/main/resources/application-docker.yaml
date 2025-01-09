@@ -13,6 +13,7 @@ spring:
       auto-offset-reset: earliest
       properties:
         spring.json.trusted.packages: "*"
+        allow.auto.create.topics: false
   docker:
     compose:
       enabled: true
