@@ -13,13 +13,14 @@ import org.springframework.stereotype.Component;
 public class DispatchTrackingHandler {
     
     public static final String DISPATCH_TRACKING_TOPIC = "dispatch.tracking";
+    public static final String DISPATCH_TRACKING_TOPIC_GROUP = "tracking.dispatch.tracking";
 
     private final TrackingService trackingService;
 
     @KafkaListener(
         id = "dispatchTrackingConsumerClient",
         topics = DISPATCH_TRACKING_TOPIC,
-        groupId = "tracking.dispatch.tracking",
+        groupId = DISPATCH_TRACKING_TOPIC_GROUP,
         containerFactory = "kafkaListenerContainerFactory"
     )
     public void listen(DispatchPreparing dispatchPreparing) {
@@ -27,7 +28,7 @@ public class DispatchTrackingHandler {
         try {
             trackingService.process(dispatchPreparing);
         } catch (Exception e) {
-            log.error("Processing failure", e);
+            log.error("Error processing payload {}", dispatchPreparing, e);
         }
     }
     
