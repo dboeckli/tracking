@@ -6,7 +6,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("docker")
-class TrackingApplicationTest {
+class TrackingApplicationIT {
 
     @Test
     void contextLoads() {
