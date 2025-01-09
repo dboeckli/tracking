@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,7 +28,6 @@ import static dev.lydtech.tracking.service.TrackingService.TRACKING_STATUS_TOPIC
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Import(DispatchTrackingHandler.class)
 @ActiveProfiles("docker")
 @Slf4j
 public class DispatchTrackingHandlerIT {

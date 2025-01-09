@@ -4,21 +4,25 @@ spring:
   kafka:
     # See: https://docs.conduktor.io/desktop/kafka-cluster-connection/setting-up-a-connection-to-kafka/connecting-to-kafka-running-on-windows-wsl-2/#two-ways-to-fix-this
     # and: https://stackoverflow.com/questions/46158296/kafka-broker-not-available-at-starting
-    bootstrap-servers: "[::1]:9092"
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    
     admin:
+      auto-create: false
       properties:
-        bootstrap.servers: "[::1]:9092"
+        bootstrap.servers: ${spring.embedded.kafka.brokers}
     consumer:
-      bootstrap-servers: "[::1]:9092"
-      auto-offset-reset: earliest
+      bootstrap-servers: ${spring.embedded.kafka.brokers}
       properties:
         spring.json.trusted.packages: "*"
-        allow.auto.create.topics: false
+        allow.auto.create.topics: true
+  
   docker:
     compose:
       enabled: false
       stop:
         command: down
+      skip:
+        in-tests: true  
 
 management:
   health:
