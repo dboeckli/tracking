@@ -35,4 +35,10 @@ bin/kafka-console-producer.sh --bootstrap-server [::1]:9092 --topic dispatch.tra
 >{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"} 
 ```
 
+When started with docker
+```
+bin/kafka-console-producer.sh --bootstrap-server localhost:29092 --topic dispatch.tracking
+>{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"}
+```
+
 
