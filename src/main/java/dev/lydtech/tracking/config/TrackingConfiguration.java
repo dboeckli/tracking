@@ -20,15 +20,17 @@ import java.util.Map;
 @Configuration
 public class TrackingConfiguration {
 
+    private static final String TRUSTED_PACKAGES = DispatchPreparing.class.getPackageName();
+
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, DispatchPreparing> kafkaListenerContainerFactory(ConsumerFactory<String, DispatchPreparing> consumerFactory) {
-        final ConcurrentKafkaListenerContainerFactory<String, DispatchPreparing> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(ConsumerFactory<String, Object> consumerFactory) {
+        final ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, DispatchPreparing> consumerFactory(
+    public ConsumerFactory<String, Object> consumerFactory(
         @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers,
         @Value("${spring.kafka.consumer.properties.allow.auto.create.topics}") Boolean allowAutoCreateTopics) {
         
@@ -38,9 +40,9 @@ public class TrackingConfiguration {
         // we do not read anymore from the application.yaml anymore
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, DispatchPreparing.class);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, allowAutoCreateTopics);
+        config.put(JsonDeserializer.TRUSTED_PACKAGES, TRUSTED_PACKAGES);
         
         return new DefaultKafkaConsumerFactory<>(config);
     }
