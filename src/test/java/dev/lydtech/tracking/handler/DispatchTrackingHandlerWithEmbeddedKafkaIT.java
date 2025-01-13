@@ -35,6 +35,7 @@ import static org.hamcrest.Matchers.equalTo;
 @DirtiesContext
 @Slf4j
 @EmbeddedKafka(controlledShutdown = true)
+// TODO: ADD TEST FOR MODIFIED HANDLER
 public class DispatchTrackingHandlerWithEmbeddedKafkaIT {
 
     @Autowired

@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("docker")
 @DirtiesContext
 @Slf4j
+// TODO: ADD TEST FOR MODIFIED HANDLER
 public class DispatchTrackingHandlerIT {
 
     @Value("${spring.kafka.bootstrap-servers}")
