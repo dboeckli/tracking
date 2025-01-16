@@ -41,4 +41,9 @@ bin/kafka-console-producer.sh --bootstrap-server localhost:29092 --topic dispatc
 >{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"}
 ```
 
+## TODO's
+
+the message classes should go from package to 'dev.lydtech.tracking.message' to the package 'dev.lydtech.message' or even better into a separate lib project.
+Reason: they are shared with the tracking project and now they are duplicated and this can cause conflicts.
+
 
