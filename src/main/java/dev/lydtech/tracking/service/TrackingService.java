@@ -1,9 +1,9 @@
 package dev.lydtech.tracking.service;
 
-import dev.lydtech.tracking.message.DispatchCompleted;
-import dev.lydtech.tracking.message.DispatchPreparing;
-import dev.lydtech.tracking.message.TrackingStatus;
-import dev.lydtech.tracking.message.TrackingStatusUpdated;
+import dev.lydtech.message.DispatchCompleted;
+import dev.lydtech.message.DispatchPreparing;
+import dev.lydtech.message.TrackingStatus;
+import dev.lydtech.message.TrackingStatusUpdated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
