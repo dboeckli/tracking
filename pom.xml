@@ -96,6 +96,13 @@
     </distributionManagement>
 
     <dependencies>
+        <!-- our lib projects with messages -->
+        <dependency>
+            <groupId>dev.lydtech</groupId>
+            <artifactId>dispatch-tracking-lib</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

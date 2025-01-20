@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="TrackingApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <module name="tracking" />
+    <module name="spring-6-project-template" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="dev.lydtech.tracking.TrackingApplication" />
     <method v="2">
       <option name="Make" enabled="true" />

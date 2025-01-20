@@ -1,6 +1,6 @@
 package dev.lydtech.tracking.config;
 
-import dev.lydtech.tracking.message.DispatchPreparing;
+import dev.lydtech.message.DispatchPreparing;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

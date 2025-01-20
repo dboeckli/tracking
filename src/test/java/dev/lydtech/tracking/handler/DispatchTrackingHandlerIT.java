@@ -1,8 +1,8 @@
 package dev.lydtech.tracking.handler;
 
-import dev.lydtech.tracking.message.DispatchCompleted;
-import dev.lydtech.tracking.message.DispatchPreparing;
-import dev.lydtech.tracking.message.TrackingStatusUpdated;
+import dev.lydtech.message.DispatchCompleted;
+import dev.lydtech.message.DispatchPreparing;
+import dev.lydtech.message.TrackingStatusUpdated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -190,7 +190,7 @@ public class DispatchTrackingHandlerIT {
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, "dev.lydtech.tracking.message");
+        consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, "dev.lydtech.message");
         return consumerProps;
     }
     
