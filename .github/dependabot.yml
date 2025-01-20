@@ -8,19 +8,21 @@ registries:
   maven-github-dboeckli:
     type: maven-repository
     url: https://maven.pkg.github.com/dboeckli
+    username: dboeckli
     token: ${{secrets.DBOECKLI_GITHUB_ACCESS_TOKEN}}
   github-dboeckli:
     type: git
     url: https://github.com
-    username: x-access-token
+    username: dboeckli
     password: ${{secrets.DBOECKLI_GITHUB_ACCESS_TOKEN}}
 updates:
   - package-ecosystem: maven
     directory: "/"
     schedule:
       interval: daily
+    registries:
+      - maven-github-dboeckli
     ignore:
-      # ignore Maven APIs/SPIs
       - dependency-name: org.apache.maven:*
   - package-ecosystem: "github-actions"
     directory: "/"
