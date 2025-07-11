@@ -1,26 +1,32 @@
 spring:
   application:
     name: tracking
-    
+
+  docker:
+    compose:
+      enabled: true
+      stop:
+        command: down
+      skip:
+        in-tests: true
+
   kafka:
-    # See: https://docs.conduktor.io/desktop/kafka-cluster-connection/setting-up-a-connection-to-kafka/connecting-to-kafka-running-on-windows-wsl-2/#two-ways-to-fix-this
-    # and: https://stackoverflow.com/questions/46158296/kafka-broker-not-available-at-starting
-    bootstrap-servers: "[::1]:9092"
-    admin:
-      properties:
-        bootstrap.servers: "[::1]:9092"
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
     consumer:
-      bootstrap-servers: "[::1]:9092"
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      group-id: sfg
       auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
         allow.auto.create.topics: false
-        
-  docker:
-    compose:
-      enabled: false
-      stop:
-        command: down
+    producer:
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    properties:
+      client.dns.lookup: use_all_dns_ips
 
 management:
   health:
@@ -44,11 +50,11 @@ management:
       probes:
         enabled: true
       show-details: always
-      
+
 logging:
   level:
-    org.zalando.logbook: TRACE      
-    
+    org.zalando.logbook: TRACE
+
 logbook:
   filter:
     enabled: true
@@ -87,4 +93,4 @@ logbook:
       - path: /**/public/**
       - path: /**/resources/**
       - path: /webjars/**
-        # Add more exclusions as needed    
+        # Add more exclusions as needed
