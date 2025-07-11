@@ -376,9 +376,7 @@ jobs:
   Trigger-Deploy:
     runs-on: ubuntu-latest
     needs: [ setup, build ]
-    #if: github.event_name != 'pull_request'
-    if: false
-    # TODO: ENABLE ME
+    if: github.event_name != 'pull_request'
 
     permissions:
       actions: write
