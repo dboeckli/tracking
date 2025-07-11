@@ -37,7 +37,7 @@ import static org.hamcrest.Matchers.equalTo;
 @DirtiesContext
 @Slf4j
 @EmbeddedKafka(controlledShutdown = true)
-public class DispatchTrackingHandlerWithEmbeddedKafkaIT {
+public class DispatchTrackingHandlerWithEmbeddedKafkaTest {
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;

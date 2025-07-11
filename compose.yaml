@@ -31,6 +31,7 @@ services:
       #volumes:
       # Diese Zeile definiert ein Volume-Mapping. Es verbindet das ./kafka-data-Verzeichnis auf dem Host-System mit dem /var/lib/kafka/data-Verzeichnis im Kafka-Container.
       #- kafka_data:/var/lib/kafka/data  # Store Kafka logs on your local machine.  
+
   dispatch-service:
     container_name: dispatch-service
     image: domboeckli/dispatch:0.0.1-SNAPSHOT
