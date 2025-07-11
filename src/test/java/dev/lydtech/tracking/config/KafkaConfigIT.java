@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import static dev.lydtech.tracking.handler.DispatchTrackingHandler.DISPATCH_TRACKING_TOPIC;
 import static dev.lydtech.tracking.handler.DispatchTrackingHandler.DISPATCH_TRACKING_TOPIC_GROUP;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @SpringBootTest
 @Slf4j
@@ -24,25 +25,25 @@ class KafkaConfigIT {
     private KafkaAdmin kafkaAdmin;
 
     @Test
-    void shouldHaveRequiredTopics() throws Exception {
+    void shouldHaveRequiredTopics() {
         try (AdminClient adminClient = AdminClient.create(kafkaAdmin.getConfigurationProperties())) {
-            ListTopicsResult topicsResult = adminClient.listTopics();
-            Collection<TopicListing> topics = topicsResult.listings().get(5, TimeUnit.SECONDS);
+            await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+                ListTopicsResult topicsResult = adminClient.listTopics();
+                Collection<TopicListing> topics = topicsResult.listings().get(5, TimeUnit.SECONDS);
 
-            ListConsumerGroupsResult consumerGroupsResult = adminClient.listConsumerGroups();
-            Collection<ConsumerGroupListing> groups = consumerGroupsResult.all().get(5, TimeUnit.SECONDS);
+                assertThat(topics)
+                    .extracting(TopicListing::name)
+                    .contains(DISPATCH_TRACKING_TOPIC);
+            });
 
-            assertThat(topics)
-                .extracting(TopicListing::name)
-                .contains(
-                    DISPATCH_TRACKING_TOPIC
-                );
+            await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+                ListConsumerGroupsResult consumerGroupsResult = adminClient.listConsumerGroups();
+                Collection<ConsumerGroupListing> groups = consumerGroupsResult.all().get(5, TimeUnit.SECONDS);
 
-            assertThat(groups)
-                .extracting(ConsumerGroupListing::groupId)
-                .contains(
-                    DISPATCH_TRACKING_TOPIC_GROUP
-                );
+                assertThat(groups)
+                    .extracting(ConsumerGroupListing::groupId)
+                    .contains(DISPATCH_TRACKING_TOPIC_GROUP);
+            });
         }
     }
 
