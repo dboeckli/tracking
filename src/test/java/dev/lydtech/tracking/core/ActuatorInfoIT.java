@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("docker")
 @Slf4j
-class ActuatorInfoIT {
+public class ActuatorInfoIT {
 
     @Autowired
     private MockMvc mockMvc;

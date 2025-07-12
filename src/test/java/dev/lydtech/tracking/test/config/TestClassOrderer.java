@@ -1,5 +1,6 @@
 package dev.lydtech.tracking.test.config;
 
+import dev.lydtech.tracking.core.ActuatorInfoIT;
 import org.junit.jupiter.api.ClassDescriptor;
 import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.ClassOrdererContext;
@@ -16,9 +17,11 @@ public class TestClassOrderer implements ClassOrderer {
         String className = classDescriptor.getDisplayName();
         if (className.endsWith("Test") || className.endsWith("Tests")) {
             return 1;
-        } else if (className.endsWith("IT")) {
+        } else if (className.endsWith(ActuatorInfoIT.class.getSimpleName())) {
             return 2;
-       } else {
+        } else if (className.endsWith("IT")) {
+            return 3;
+        } else {
             throw new IllegalArgumentException("Test class " + className + " does not end with 'Test', 'Tests','IT'");
         }
     }
