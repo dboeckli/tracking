@@ -22,6 +22,22 @@ spec:
         - name: wait-for-kafka-client
           image: busybox:1.37.0
           command: [ 'sh', '-c', 'until nc -z {{ .Values.kafka.serviceFQDN  }} {{ .Values.kafka.clientPort }}; do echo "[busybox: wait-for-kafka-client] waiting for kafka"; sleep 2; done; echo "[busybox: wait-for-kafka-client] kafka is available"' ]
+        - name: wait-for-kafka-ready
+          image: bitnami/kafka:3.7.1
+          command:
+            - sh
+            - -c
+            - |
+              until kafka-broker-api-versions.sh --bootstrap-server {{ .Values.kafka.serviceFQDN  }}:{{ .Values.kafka.clientPort }}; do
+                echo "[bitnami/kafka: wait-for-kafka-ready] Waiting for Kafka API versions to be available..."
+                sleep 5
+              done
+              echo "[bitnami/kafka: wait-for-kafka-ready] Kafka API versions check successful!"
+              until kafka-topics.sh --bootstrap-server {{ .Values.kafka.serviceFQDN  }}:{{ .Values.kafka.port }} --list; do
+                echo "[bitnami/kafka: wait-for-kafka-ready] Waiting for Kafka List Topics..."
+                sleep 5
+              done
+              echo "[bitnami/kafka: wait-for-kafka-ready] Waiting for Kafka List Topics!"
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
