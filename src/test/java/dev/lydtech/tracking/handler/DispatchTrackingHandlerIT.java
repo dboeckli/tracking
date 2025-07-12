@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
 
+import static dev.lydtech.tracking.config.TrackingConfiguration.TRUSTED_PACKAGES;
+import static dev.lydtech.tracking.config.TrackingConfiguration.getTypeMappings;
 import static dev.lydtech.tracking.handler.DispatchTrackingHandler.DISPATCH_TRACKING_TOPIC;
 import static dev.lydtech.tracking.service.TrackingService.TRACKING_STATUS_TOPIC;
 import static org.junit.jupiter.api.Assertions.*;
@@ -190,7 +192,8 @@ public class DispatchTrackingHandlerIT {
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, "dev.lydtech.message");
+        consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, TRUSTED_PACKAGES);
+        consumerProps.put(JsonDeserializer.TYPE_MAPPINGS, getTypeMappings());
         return consumerProps;
     }
     

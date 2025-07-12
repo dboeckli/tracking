@@ -31,6 +31,11 @@ services:
       #volumes:
       # Diese Zeile definiert ein Volume-Mapping. Es verbindet das ./kafka-data-Verzeichnis auf dem Host-System mit dem /var/lib/kafka/data-Verzeichnis im Kafka-Container.
       #- kafka_data:/var/lib/kafka/data  # Store Kafka logs on your local machine.  
+    healthcheck:
+      test: [ "CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   dispatch-service:
     container_name: dispatch-service
@@ -45,7 +50,7 @@ services:
       SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS: kafka:9092
     depends_on:
       kafka:
-        condition: service_started
+        condition: service_healthy
         required: true
 
 #volumes:

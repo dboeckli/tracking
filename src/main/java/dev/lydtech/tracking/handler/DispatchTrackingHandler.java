@@ -24,6 +24,11 @@ public class DispatchTrackingHandler {
     public static final String DISPATCH_TRACKING_TOPIC_GROUP = "tracking.dispatch.tracking";
 
     private final TrackingService trackingService;
+
+    @KafkaHandler(isDefault = true)
+    public void handleUnknown(Object unknown) {
+        log.error("Received unknown type of message: {}", unknown);
+    }
     
     @KafkaHandler
     public void listen(DispatchPreparing dispatchPreparing) {
