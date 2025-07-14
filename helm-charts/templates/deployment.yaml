@@ -51,6 +51,8 @@ spec:
               value: "classpath:logback-spring.xml"
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: "{{ .Values.kafka.serviceFQDN }}:{{ .Values.kafka.clientPort }}"
+            - name: SERVER_PORT
+              value: {{ .Values.service.targetPort }}
 
           ports:
             - name: http
