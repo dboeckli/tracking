@@ -53,3 +53,7 @@ dispatch:
     advertisedListenersString: "PLAINTEXT://tracking-kafka.tracking.svc.cluster.local:9092,PLAINTEXT_HOST://tracking-kafka.tracking.svc.cluster.local:29092"
   tracking:
     enabled: false
+  wiremock:
+    enabled: true
+    serviceFQDN: "tracking-wiremock.tracking.svc.cluster.local"
+
