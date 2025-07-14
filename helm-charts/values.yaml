@@ -44,3 +44,10 @@ kafka:
 
 ingress:
   enabled: false
+
+# Section for overriding values in subcharts defined in the Chart.yaml
+tracking:
+  kafka:
+    enabled: false
+    serviceFQDN: "tracking-kafka.tracking.svc.cluster.local"
+    advertisedListenersString: "PLAINTEXT://tracking-kafka.tracking.svc.cluster.local:9092,PLAINTEXT_HOST://tracking-kafka.tracking.svc.cluster.local:29092"

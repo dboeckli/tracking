@@ -37,6 +37,17 @@ services:
       timeout: 5s
       retries: 10
 
+  wiremock:
+    image: wiremock/wiremock:3.13.1
+    container_name: wiremock
+    ports:
+      - "8888:8080"
+    expose:
+      - 8888
+    command: --global-response-templating --disable-gzip --verbose
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+
   dispatch-service:
     container_name: dispatch-service
     image: domboeckli/dispatch:0.0.1-SNAPSHOT
@@ -48,10 +59,48 @@ services:
       SERVER_PORT: 8082
       SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:9092
       SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS: kafka:9092
+      DISPATCH_STOCKSERVICEENDPOINT: http://wiremock:8080/api/stock
     depends_on:
       kafka:
         condition: service_healthy
         required: true
+
+  busybox:
+    image: busybox:1.37.0
+    container_name: busybox
+    depends_on:
+      wiremock:
+        condition: service_started
+        required: true
+      dispatch-service:
+        condition: service_started
+        required: true
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "
+            echo 'Checking BusyBox readiness...' &&
+            test -f /bin/sh &&
+            wget -qO- http://wiremock:8080/actuator/health/readiness | grep -q '\"status\":\"UP\"' &&
+            wget -qO- http://dispatch-service:8082/actuator/health/readiness | grep -q '\"status\":\"UP\"'
+          " ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    command: >
+      /bin/sh -c '
+      while true; do
+        wiremock_health=$$(wget -q -O - http://wiremock:8080/actuator/health/readiness 2>/dev/null)
+        dispatch_service_health=$$(wget -q -O - http://dispatch-service:8082/actuator/health/readiness 2>/dev/null)
+
+        echo "{
+          \"timestamp\": \"$$(date -Iseconds)\",
+          \"services\": {
+            \"wiremock\": $$wiremock_health,
+            \"dispatch-service\": $$dispatch_service_health
+          }
+        }"
+        sleep 15
+      done
+      '                 
 
 #volumes:
 #  kafka_data:        
