@@ -32,7 +32,7 @@ class KafkaHealthIndicatorIT {
             .andExpect(jsonPath("$.status").value("UP"))
             .andExpect(jsonPath("$.details.kafkaBootstrapServers").value("[::1]:29092"))
             .andExpect(jsonPath("$.details.kafkaResponse").value("Topic: health-check, Partition: 0, Offset: 0"))
-            .andExpect(jsonPath("$.details.clusterId").value("Mk3OEYBSD34fcwNTJENDM2Qk_DISPATCH"))
+            .andExpect(jsonPath("$.details.clusterId").value("Mk3OEYBSD34fcwNTJENDM2Qk_TRACKING"))
             .andExpect(jsonPath("$.details.nodes").isArray())
             .andExpect(jsonPath("$.details.nodes[0]").value("kafka:9092"))
             .andExpect(jsonPath("$.details.consumerGroups").isArray())
