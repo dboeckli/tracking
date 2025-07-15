@@ -130,15 +130,36 @@ nc -zv tracking-kafka.tracking.svc.cluster.local 29092
 echo "Exit code for port 29092: $?"
 ```
 
-create kafka sidecar
+create bitnami/kafka sidecar and open bash
 ```powershell
-kubectl run kafka-test --rm -it --image=bitnami/kafka:3.7.1 --namespace=tracking --command -- sh
+kubectl run kafka-test --rm -it --image=bitnami/kafka:3.9.0 --namespace=tracking --command -- bash
 ```
 
 run kafka commands
 ```powershell
 cd /opt/bitnami/kafka/bin
 ./kafka-topics.sh --bootstrap-server tracking-kafka.tracking.svc.cluster.local:29092 --list
+```
+
+Send message
+Send a DispatchPreparing-Message to topic dispatch.tracking
+```bash
+echo '__TypeId__:dev.lydtech.message.DispatchPreparing|{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"}' | /usr/bin/kafka-console-producer \
+  --bootstrap-server localhost:9092 \
+  --topic dispatch.tracking \
+  --property parse.headers=true \
+  --property "headers.delimiter=|" \
+  --property "headers.key.separator=:"
+```
+
+Send a DispatchCompleted-Message to topic dispatch.tracking
+```bash
+echo '__TypeId__:dev.lydtech.message.DispatchCompleted|{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"}' | /usr/bin/kafka-console-producer \
+  --bootstrap-server localhost:9092 \
+  --topic dispatch.tracking \
+  --property parse.headers=true \
+  --property "headers.delimiter=|" \
+  --property "headers.key.separator=:"
 ```
 
 You can use the actuator rest call to verify via port 30081
