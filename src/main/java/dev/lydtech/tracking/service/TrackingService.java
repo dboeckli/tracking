@@ -29,7 +29,8 @@ public class TrackingService {
             .build();
         
         kafkaProducer.send(TRACKING_STATUS_TOPIC, trackingStatusUpdated).get();
-        log.info("### dispatchPreparing tracking status message for order {} has been sent: {}", trackingStatusUpdated.getOrderId(), trackingStatusUpdated);
+        log.info("\n### dispatchPreparing tracking status message for order {}\nhas been sent: {}\nto {}",
+            trackingStatusUpdated.getOrderId(), trackingStatusUpdated, TRACKING_STATUS_TOPIC);
     }
 
 
@@ -42,6 +43,7 @@ public class TrackingService {
             .build();
 
         kafkaProducer.send(TRACKING_STATUS_TOPIC, trackingStatusUpdated).get();
-        log.info("### dispatchCompleted tracking status message for order {} has been sent: {}", trackingStatusUpdated.getOrderId(), trackingStatusUpdated);
+        log.info("\n### DispatchCompleted tracking status message for order {}\nhas been sent: {}\nto {}",
+            trackingStatusUpdated.getOrderId(), trackingStatusUpdated, TRACKING_STATUS_TOPIC);
     }
 }
