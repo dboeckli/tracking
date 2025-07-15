@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: tracking
@@ -87,4 +90,4 @@ logbook:
       - path: /**/public/**
       - path: /**/resources/**
       - path: /webjars/**
-        # Add more exclusions as needed    
+        # Add more exclusions as needed
