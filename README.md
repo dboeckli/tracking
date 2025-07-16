@@ -90,7 +90,7 @@ tar -xvf $file.Name
 install
 ```powershell
 $APPLICATION_NAME = Get-ChildItem -Directory | Where-Object { $_.LastWriteTime -ge $file.LastWriteTime } | Select-Object -ExpandProperty Name
-helm upgrade --install $APPLICATION_NAME ./$APPLICATION_NAME --namespace tracking --create-namespace --wait --timeout 8m --debug --render-subchart-notes
+helm upgrade --install $APPLICATION_NAME ./$APPLICATION_NAME -f "./$APPLICATION_NAME/dependencies-values.yaml" --namespace tracking --create-namespace --wait --timeout 8m --debug --render-subchart-notes
 ```
 
 show logs
@@ -163,4 +163,3 @@ echo '__TypeId__:dev.lydtech.message.DispatchCompleted|{"orderId":"8ed0dc67-41a4
 ```
 
 You can use the actuator rest call to verify via port 30081
-
