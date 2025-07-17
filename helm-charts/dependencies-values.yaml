@@ -1,0 +1,10 @@
+# this yaml is merged into the values file and deleted before using helm
+bitnamiKafkaImage:
+  repository: bitnami/kafka
+  tag: "3.9.0"
+  pullPolicy: IfNotPresent
+
+busyboxImage:
+  repository: busybox
+  tag: "1.37.0"
+  pullPolicy: IfNotPresent

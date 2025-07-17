@@ -163,4 +163,3 @@ echo '__TypeId__:dev.lydtech.message.DispatchCompleted|{"orderId":"8ed0dc67-41a4
 ```
 
 You can use the actuator rest call to verify via port 30081
-
