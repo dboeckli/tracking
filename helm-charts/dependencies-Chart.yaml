@@ -1,4 +1,4 @@
-# the first section is ignored. is replaces by the values from the Chart.yaml
+# the first section is ignored. is replaced by the values from the Chart.yaml
 apiVersion: v2
 name: test
 description: test
@@ -6,7 +6,7 @@ type: application
 version: 0.0.1
 appVersion: 0.0.1
 
-# this yaml is merged into the chart file and deleted before using helm and deleted afterwards in the target directory
+# this YAML is merged into the chart file and deleted before using helm and deleted afterward in the target directory
 dependencies:
   - name: dispatch
     version: "v0.0.1-SNAPSHOT"
