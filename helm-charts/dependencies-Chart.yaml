@@ -1,3 +1,4 @@
+# the first section is ignored. is replaces by the values from the Chart.yaml
 apiVersion: v2
 name: test
 description: test
