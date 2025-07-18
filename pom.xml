@@ -483,8 +483,8 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>${project.build.directory}/helm-charts/Chart.yaml</file>
                                 <file>${project.build.directory}/helm-charts/dependencies-Chart.yaml</file>
+                                <file>${project.build.directory}/helm-charts/Chart.yaml</file>
                             </files>
                             <finalYaml>${project.build.directory}/helm-charts/Chart.yaml</finalYaml>
                             <flowStyle>BLOCK</flowStyle>
