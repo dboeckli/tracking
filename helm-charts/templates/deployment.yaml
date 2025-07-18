@@ -52,7 +52,7 @@ spec:
               echo "[bitnami/kafka: wait-for-kafka-ready] Output Kafka List Topics: $output2"
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.registry }}/{{ .Chart.Name }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: IfNotPresent
           env:
             - name: JAVA_TIMEZONE

@@ -1,0 +1,6 @@
+# this yaml is merged into the chart file and deleted before using helm and deleted afterwards in the target directory
+dependencies:
+  - name: dispatch
+    version: "v0.0.1-SNAPSHOT"
+    repository: "oci://registry-1.docker.io/domboeckli"
+    condition: dispatch.enabled
