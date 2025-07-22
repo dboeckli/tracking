@@ -8,7 +8,8 @@ version: @helm.chart.version@
 appVersion: @project.version@
 
 dependencies:
-  - name: kafka
+  - name: tracking-kafka
+    alias: kafka
     version: @helm.chart.version@
     repository: "file://charts/kafka"
     condition: kafka.enabled
