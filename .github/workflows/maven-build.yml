@@ -4,11 +4,11 @@ run-name: >
 
 on:
   push:
-    branches: [ "main", "master", "feature/**", "release/**" ]
+    branches: [ "main", "master", "feature/**", "dependabot/**", "release/**" ]
   pull_request:
     branches: [ "main", "master" ]
   schedule:
-    - cron: '15 21 * * *' # daily at 2:05
+    - cron: '15 21 * * *'
 jobs:
 
   setup:
