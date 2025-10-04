@@ -9,6 +9,6 @@ appVersion: 0.0.1
 # this YAML is merged into the chart file and deleted before using helm and deleted afterward in the target directory
 dependencies:
   - name: dispatch
-    version: "v0.0.1-SNAPSHOT"
+    version: "v0.0.2-SNAPSHOT"
     repository: "oci://registry-1.docker.io/domboeckli"
     condition: dispatch.enabled
