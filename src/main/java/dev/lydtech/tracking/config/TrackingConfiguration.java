@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
+import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,16 +43,16 @@ public class TrackingConfiguration {
 
         // we do not read anymore from the application.yaml anymore
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
+        config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JacksonJsonDeserializer.class);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, allowAutoCreateTopics);
 
-        config.put(JsonDeserializer.TRUSTED_PACKAGES, TRUSTED_PACKAGES);
+        config.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, TRUSTED_PACKAGES);
 
         // Add JsonDeserializer
-        config.put(JsonDeserializer.TYPE_MAPPINGS, getTypeMappings());
-        config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, true);
-        config.put(JsonDeserializer.REMOVE_TYPE_INFO_HEADERS, false);
+        config.put(JacksonJsonDeserializer.TYPE_MAPPINGS, getTypeMappings());
+        config.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, true);
+        config.put(JacksonJsonDeserializer.REMOVE_TYPE_INFO_HEADERS, false);
 
         //config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, MessageType.DISPATCH_PREPARING.getClazz().getName());
 
@@ -70,10 +70,10 @@ public class TrackingConfiguration {
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
         // we do not read anymore from the application.yaml anymore
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
-        config.put(JsonSerializer.TYPE_MAPPINGS, getTypeMappings());
+        config.put(JacksonJsonSerializer.TYPE_MAPPINGS, getTypeMappings());
 
         return new DefaultKafkaProducerFactory<>(config);
     }

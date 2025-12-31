@@ -10,15 +10,15 @@ metadata:
 spec:
   containers:
     - name: test-kafka-connection
-      image: {{ .Values.bitnamiKafkaImage.repository }}:{{ .Values.bitnamiKafkaImage.tag }}
-      imagePullPolicy: {{ .Values.bitnamiKafkaImage.pullPolicy }}
+      image: {{ .Values.kafkaImage.repository }}:{{ .Values.kafkaImage.tag }}
+      imagePullPolicy: {{ .Values.kafkaImage.pullPolicy }}
       command: ['/bin/bash', '-c']
       args:
         - |
           ERROR_OCCURED=0
 
           echo "### Test 1: Checking Kafka broker status"
-          kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --list
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --list
           echo "Exit code: $?"
           if [ $? -ne 0 ]; then
             echo "Failed to connect to Kafka broker"
@@ -28,7 +28,7 @@ spec:
           fi
 
           echo "### Test 2: Creating a test topic"
-          kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --create --topic test-topic --partitions 1 --replication-factor 1
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --create --topic test-topic --partitions 1 --replication-factor 1
           echo "Exit code: $?"
           if [ $? -ne 0 ]; then
             echo "Failed to create test topic"
@@ -38,7 +38,7 @@ spec:
           fi
 
           echo "### Test 3: Listing topics to verify test topic creation"
-          kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --list | grep test-topic
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --list | grep test-topic
           echo "Exit code: $?"
           if [ $? -ne 0 ]; then
             echo "Test topic not found in the list"
