@@ -17,6 +17,10 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
         allow.auto.create.topics: false
+    listener:
+      observation-enabled: true
+    template:
+      observation-enabled: true
   docker:
     compose:
       enabled: true
@@ -64,6 +68,7 @@ management:
       enabled: true
       include: request_headers, response_headers, session_id, time_taken
   observations:
+
     annotations:
       enabled: true
     http:
