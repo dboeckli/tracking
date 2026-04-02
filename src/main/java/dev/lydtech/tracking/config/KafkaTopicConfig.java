@@ -14,7 +14,7 @@ import static dev.lydtech.tracking.service.TrackingService.TRACKING_STATUS_TOPIC
 
 @Configuration
 public class KafkaTopicConfig {
-    
+
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
@@ -34,5 +34,5 @@ public class KafkaTopicConfig {
             .configs(Collections.singletonMap("retention.ms", String.valueOf(3600000))));
         return topics;
     }
-    
+
 }

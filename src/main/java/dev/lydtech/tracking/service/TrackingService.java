@@ -20,21 +20,22 @@ public class TrackingService {
 
     private final KafkaTemplate<String, Object> kafkaProducer;
 
-    public void processDispatchPreparing(DispatchPreparing dispatchPreparing) throws ExecutionException, InterruptedException {
+    public void processDispatchPreparing(DispatchPreparing dispatchPreparing)
+            throws ExecutionException, InterruptedException {
         log.info("Received dispatchPreparing message: {}", dispatchPreparing);
 
         TrackingStatusUpdated trackingStatusUpdated = TrackingStatusUpdated.builder()
             .orderId(dispatchPreparing.getOrderId())
             .status(TrackingStatus.PREPARING)
             .build();
-        
+
         kafkaProducer.send(TRACKING_STATUS_TOPIC, trackingStatusUpdated).get();
         log.info("\n### dispatchPreparing tracking status message for order {}\nhas been sent: {}\nto {}",
-            trackingStatusUpdated.getOrderId(), trackingStatusUpdated, TRACKING_STATUS_TOPIC);
+                trackingStatusUpdated.getOrderId(), trackingStatusUpdated, TRACKING_STATUS_TOPIC);
     }
 
-
-    public void processDispatchCompleted(DispatchCompleted dispatchCompleted) throws ExecutionException, InterruptedException {
+    public void processDispatchCompleted(DispatchCompleted dispatchCompleted)
+            throws ExecutionException, InterruptedException {
         log.info("Received dispatchCompleted message: {}", dispatchCompleted);
 
         TrackingStatusUpdated trackingStatusUpdated = TrackingStatusUpdated.builder()
@@ -44,6 +45,7 @@ public class TrackingService {
 
         kafkaProducer.send(TRACKING_STATUS_TOPIC, trackingStatusUpdated).get();
         log.info("\n### DispatchCompleted tracking status message for order {}\nhas been sent: {}\nto {}",
-            trackingStatusUpdated.getOrderId(), trackingStatusUpdated, TRACKING_STATUS_TOPIC);
+                trackingStatusUpdated.getOrderId(), trackingStatusUpdated, TRACKING_STATUS_TOPIC);
     }
+
 }

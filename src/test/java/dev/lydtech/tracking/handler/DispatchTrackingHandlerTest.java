@@ -25,10 +25,8 @@ class DispatchTrackingHandlerTest {
 
     @Test
     public void listen_dispatchPreparing_Success() throws Exception {
-        DispatchPreparing testEvent = DispatchPreparing.builder()
-            .orderId(UUID.randomUUID())
-            .build();
-        
+        DispatchPreparing testEvent = DispatchPreparing.builder().orderId(UUID.randomUUID()).build();
+
         handler.listen(testEvent);
         verify(trackingServiceMock, times(1)).processDispatchPreparing(testEvent);
     }
@@ -46,10 +44,8 @@ class DispatchTrackingHandlerTest {
 
     @Test
     public void listen_dispatchPreparing_ServiceThrowsException() throws Exception {
-        DispatchPreparing testEvent = DispatchPreparing.builder()
-            .orderId(UUID.randomUUID())
-            .build();
-        
+        DispatchPreparing testEvent = DispatchPreparing.builder().orderId(UUID.randomUUID()).build();
+
         doThrow(new RuntimeException("Service failure")).when(trackingServiceMock).processDispatchPreparing(testEvent);
 
         handler.listen(testEvent);

@@ -12,15 +12,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@KafkaListener(
-    id = "dispatchTrackingConsumerClient",
-    topics = DispatchTrackingHandler.DISPATCH_TRACKING_TOPIC,
-    groupId = DispatchTrackingHandler.DISPATCH_TRACKING_TOPIC_GROUP,
-    containerFactory = "kafkaListenerContainerFactory"
-)
+@KafkaListener(id = "dispatchTrackingConsumerClient", topics = DispatchTrackingHandler.DISPATCH_TRACKING_TOPIC,
+        groupId = DispatchTrackingHandler.DISPATCH_TRACKING_TOPIC_GROUP,
+        containerFactory = "kafkaListenerContainerFactory")
 public class DispatchTrackingHandler {
-    
+
     public static final String DISPATCH_TRACKING_TOPIC = "dispatch.tracking";
+
     public static final String DISPATCH_TRACKING_TOPIC_GROUP = "tracking.dispatch.tracking";
 
     private final TrackingService trackingService;
@@ -29,13 +27,14 @@ public class DispatchTrackingHandler {
     public void handleUnknown(Object unknown) {
         log.error("Received unknown type of message: {}", unknown);
     }
-    
+
     @KafkaHandler
     public void listen(DispatchPreparing dispatchPreparing) {
         log.info("Received dispatchPreparing tracking message: {}", dispatchPreparing);
         try {
             trackingService.processDispatchPreparing(dispatchPreparing);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error("Error processing payload {}", dispatchPreparing, e);
         }
     }
@@ -45,9 +44,10 @@ public class DispatchTrackingHandler {
         log.info("Received dispatchCompleted tracking message: {}", dispatchCompleted);
         try {
             trackingService.processDispatchCompleted(dispatchCompleted);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error("Error processing payload {}", dispatchCompleted, e);
         }
     }
-    
+
 }
