@@ -39,10 +39,11 @@ public class DispatchTrackingHandlerIT {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
-    
+
     private KafkaConsumer<String, DispatchPreparing> consumerDispatchPreparing;
+
     private KafkaConsumer<String, DispatchCompleted> consumerDispatchCompleted;
-    
+
     private KafkaConsumer<String, TrackingStatusUpdated> consumerTrackingStatusUpdated;
 
     @Autowired
@@ -83,54 +84,54 @@ public class DispatchTrackingHandlerIT {
 
     @Test
     public void testOrderCreatedHandlerForDispatchPreparedMessage() {
-        DispatchPreparing givenDispatchPreparing = DispatchPreparing.builder()
-            .orderId(UUID.randomUUID())
-            .build();
+        DispatchPreparing givenDispatchPreparing = DispatchPreparing.builder().orderId(UUID.randomUUID()).build();
 
         assertDoesNotThrow(() -> {
             kafkaTemplate.send(DISPATCH_TRACKING_TOPIC, givenDispatchPreparing).get();
         });
         log.info("Sent order: {}", givenDispatchPreparing);
 
-        UUID orderIdDispatchedTrackingForConsumerDispatchPreparing = geMessageIDFromConsumerDispatchedTrackingForConsumerDispatchPreparing(consumerDispatchPreparing);
+        UUID orderIdDispatchedTrackingForConsumerDispatchPreparing = geMessageIDFromConsumerDispatchedTrackingForConsumerDispatchPreparing(
+                consumerDispatchPreparing);
         UUID orderIdTrackingStatus = geMessageIDFromConsumerTrackingStatus(consumerTrackingStatusUpdated);
 
         assertAll("Order IDs should match across all messages",
-            () -> assertNotNull(orderIdDispatchedTrackingForConsumerDispatchPreparing),
-            () -> assertNotNull(orderIdTrackingStatus),
-            () -> assertEquals(givenDispatchPreparing.getOrderId(), orderIdDispatchedTrackingForConsumerDispatchPreparing),
-            () -> assertEquals(givenDispatchPreparing.getOrderId(), orderIdTrackingStatus)
-        );
+                () -> assertNotNull(orderIdDispatchedTrackingForConsumerDispatchPreparing),
+                () -> assertNotNull(orderIdTrackingStatus),
+                () -> assertEquals(givenDispatchPreparing.getOrderId(),
+                        orderIdDispatchedTrackingForConsumerDispatchPreparing),
+                () -> assertEquals(givenDispatchPreparing.getOrderId(), orderIdTrackingStatus));
     }
 
     @Test
     public void testOrderCreatedHandlerForDispatchCompletedMessage() {
-        DispatchCompleted givenDispatchCompleted = DispatchCompleted.builder()
-            .orderId(UUID.randomUUID())
-            .build();
+        DispatchCompleted givenDispatchCompleted = DispatchCompleted.builder().orderId(UUID.randomUUID()).build();
 
         assertDoesNotThrow(() -> {
             kafkaTemplate.send(DISPATCH_TRACKING_TOPIC, givenDispatchCompleted).get();
         });
         log.info("Sent order: {}", givenDispatchCompleted);
 
-        UUID orderIdDispatchedTrackingForConsumerDispatchCompleted = geMessageIDFromConsumerDispatchedTrackingForConsumerDispatchCompleted(consumerDispatchCompleted);
+        UUID orderIdDispatchedTrackingForConsumerDispatchCompleted = geMessageIDFromConsumerDispatchedTrackingForConsumerDispatchCompleted(
+                consumerDispatchCompleted);
         UUID orderIdTrackingStatus = geMessageIDFromConsumerTrackingStatus(consumerTrackingStatusUpdated);
 
         assertAll("Order IDs should match across all messages",
-            () -> assertNotNull(orderIdDispatchedTrackingForConsumerDispatchCompleted),
-            () -> assertNotNull(orderIdTrackingStatus),
-            () -> assertEquals(givenDispatchCompleted.getOrderId(), orderIdDispatchedTrackingForConsumerDispatchCompleted),
-            () -> assertEquals(givenDispatchCompleted.getOrderId(), orderIdTrackingStatus)
-        );
+                () -> assertNotNull(orderIdDispatchedTrackingForConsumerDispatchCompleted),
+                () -> assertNotNull(orderIdTrackingStatus),
+                () -> assertEquals(givenDispatchCompleted.getOrderId(),
+                        orderIdDispatchedTrackingForConsumerDispatchCompleted),
+                () -> assertEquals(givenDispatchCompleted.getOrderId(), orderIdTrackingStatus));
     }
 
-    private UUID geMessageIDFromConsumerDispatchedTrackingForConsumerDispatchPreparing(KafkaConsumer<String, DispatchPreparing> consumer) {
+    private UUID geMessageIDFromConsumerDispatchedTrackingForConsumerDispatchPreparing(
+            KafkaConsumer<String, DispatchPreparing> consumer) {
         // Wait for DispatchPreparing message
         ConsumerRecords<String, DispatchPreparing> records = consumer.poll(Duration.ofSeconds(10));
 
         log.info("### DispatchPreparing message count: {}", records.count());
-        assertFalse(records.isEmpty() || records.count() == 0, "Expected DispatchPreparing records, but none were received");
+        assertFalse(records.isEmpty() || records.count() == 0,
+                "Expected DispatchPreparing records, but none were received");
 
         ConsumerRecord<String, DispatchPreparing> record = null;
         for (ConsumerRecord<String, DispatchPreparing> r : records) {
@@ -146,12 +147,14 @@ public class DispatchTrackingHandlerIT {
         return orderDispatchPreparing.getOrderId();
     }
 
-    private UUID geMessageIDFromConsumerDispatchedTrackingForConsumerDispatchCompleted(KafkaConsumer<String, DispatchCompleted> consumer) {
+    private UUID geMessageIDFromConsumerDispatchedTrackingForConsumerDispatchCompleted(
+            KafkaConsumer<String, DispatchCompleted> consumer) {
         // Wait for DispatchPreparing message
         ConsumerRecords<String, DispatchCompleted> records = consumer.poll(Duration.ofSeconds(10));
 
         log.info("### DispatchCompleted message count: {}", records.count());
-        assertFalse(records.isEmpty() || records.count() == 0, "Expected DispatchCompleted records, but none were received");
+        assertFalse(records.isEmpty() || records.count() == 0,
+                "Expected DispatchCompleted records, but none were received");
 
         ConsumerRecord<String, DispatchCompleted> record = null;
         for (ConsumerRecord<String, DispatchCompleted> r : records) {
@@ -172,8 +175,9 @@ public class DispatchTrackingHandlerIT {
         ConsumerRecords<String, TrackingStatusUpdated> records = consumer.poll(Duration.ofSeconds(10));
 
         log.info("### TrackingStatusUpdated message count: {}", records.count());
-        assertFalse(records.isEmpty() || records.count() == 0, "Expected TrackingStatusUpdated records, but none were received");
-        
+        assertFalse(records.isEmpty() || records.count() == 0,
+                "Expected TrackingStatusUpdated records, but none were received");
+
         ConsumerRecord<String, TrackingStatusUpdated> record = null;
         for (ConsumerRecord<String, TrackingStatusUpdated> r : records) {
             record = r;
@@ -196,5 +200,5 @@ public class DispatchTrackingHandlerIT {
         consumerProps.put(JacksonJsonDeserializer.TYPE_MAPPINGS, getTypeMappings());
         return consumerProps;
     }
-    
+
 }

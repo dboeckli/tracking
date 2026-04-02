@@ -27,7 +27,8 @@ public class TrackingConfiguration {
     public static final String TRUSTED_PACKAGES = DispatchPreparing.class.getPackageName();
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(ConsumerFactory<String, Object> consumerFactory) {
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
+            ConsumerFactory<String, Object> consumerFactory) {
         final ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
@@ -35,9 +36,9 @@ public class TrackingConfiguration {
 
     @Bean
     public ConsumerFactory<String, Object> consumerFactory(
-        @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers,
-        @Value("${spring.kafka.consumer.properties.allow.auto.create.topics}") Boolean allowAutoCreateTopics) {
-        
+            @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers,
+            @Value("${spring.kafka.consumer.properties.allow.auto.create.topics}") Boolean allowAutoCreateTopics) {
+
         final Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
@@ -54,7 +55,8 @@ public class TrackingConfiguration {
         config.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, true);
         config.put(JacksonJsonDeserializer.REMOVE_TYPE_INFO_HEADERS, false);
 
-        //config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, MessageType.DISPATCH_PREPARING.getClazz().getName());
+        // config.put(JsonDeserializer.VALUE_DEFAULT_TYPE,
+        // MessageType.DISPATCH_PREPARING.getClazz().getName());
 
         return new DefaultKafkaConsumerFactory<>(config);
     }
@@ -65,7 +67,8 @@ public class TrackingConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory(@Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
+    public ProducerFactory<String, Object> producerFactory(
+            @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
@@ -86,10 +89,12 @@ public class TrackingConfiguration {
 
     @Getter
     private enum MessageType {
+
         DISPATCH_PREPARING("dispatch-preparing-prefix", DispatchPreparing.class),
         DISPATCH_COMPLETED("dispatch-completed-prefix", DispatchCompleted.class);
 
         private final String prefix;
+
         private final Class<?> clazz;
 
         MessageType(String prefix, Class<?> clazz) {
@@ -98,5 +103,5 @@ public class TrackingConfiguration {
         }
 
     }
-    
+
 }

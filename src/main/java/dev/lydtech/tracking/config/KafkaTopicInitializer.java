@@ -25,6 +25,7 @@ import static org.awaitility.Awaitility.await;
 public class KafkaTopicInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
     private final KafkaAdmin kafkaAdmin;
+
     private final List<NewTopic> topics;
 
     @Override
@@ -40,10 +41,12 @@ public class KafkaTopicInitializer implements ApplicationListener<ContextRefresh
                 try {
                     adminClient.createTopics(List.of(topic)).all().get(30, TimeUnit.SECONDS);
                     log.info("Topic created successfully: {}", topic.name());
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                }
+                catch (InterruptedException | ExecutionException | TimeoutException e) {
                     if (e.getCause() instanceof TopicExistsException) {
                         log.warn("### Topic '{}'", e.getMessage());
-                    } else {
+                    }
+                    else {
                         log.error("Failed to create topics", e);
                     }
                 }
@@ -51,39 +54,39 @@ public class KafkaTopicInitializer implements ApplicationListener<ContextRefresh
         }
         try {
             showTopicDetails();
-        } catch (ExecutionException | InterruptedException e) {
+        }
+        catch (ExecutionException | InterruptedException e) {
             log.error("Error checking Kafka topics", e);
         }
     }
-    
+
     private void showTopicDetails() throws ExecutionException, InterruptedException {
         try (AdminClient adminClient = AdminClient.create(kafkaAdmin.getConfigurationProperties())) {
-            List<String> topicNames = topics.stream()
-                .map(NewTopic::name)
-                .toList();
-            
+            List<String> topicNames = topics.stream().map(NewTopic::name).toList();
+
             log.info("### Waiting for topics to be created: {}", topicNames);
-            await().atMost(30, TimeUnit.SECONDS)
-                .pollInterval(1, TimeUnit.SECONDS)
-                .until(() -> {
-                    try {
-                        DescribeTopicsResult resultCheck = adminClient.describeTopics(topicNames);
-                        Map<String, TopicDescription> descriptions = resultCheck.allTopicNames().get(5, TimeUnit.SECONDS);
-                        return descriptions.size() == topicNames.size();
-                    } catch (Exception e) {
-                        log.warn("Topics not yet available: {}", e.getMessage());
-                        return false;
-                    }
-                });
+            await().atMost(30, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> {
+                try {
+                    DescribeTopicsResult resultCheck = adminClient.describeTopics(topicNames);
+                    Map<String, TopicDescription> descriptions = resultCheck.allTopicNames().get(5, TimeUnit.SECONDS);
+                    return descriptions.size() == topicNames.size();
+                }
+                catch (Exception e) {
+                    log.warn("Topics not yet available: {}", e.getMessage());
+                    return false;
+                }
+            });
             log.info("### All topics are now available. Describing topic details...");
             DescribeTopicsResult result = adminClient.describeTopics(topicNames);
             try {
                 Map<String, TopicDescription> topicDescriptions = result.allTopicNames().get(10, TimeUnit.SECONDS);
                 for (String topicName : topicNames) {
                     TopicDescription description = topicDescriptions.get(topicName);
-                    Map<ConfigResource, Config> configs = adminClient.describeConfigs(
-                        Collections.singleton(new ConfigResource(ConfigResource.Type.TOPIC, topicName))
-                    ).all().get();
+                    Map<ConfigResource, Config> configs = adminClient
+                        .describeConfigs(
+                                Collections.singleton(new ConfigResource(ConfigResource.Type.TOPIC, topicName)))
+                        .all()
+                        .get();
 
                     log.info("----Topic Details -------");
                     log.info("Topic: {}", topicName);
@@ -97,9 +100,11 @@ public class KafkaTopicInitializer implements ApplicationListener<ContextRefresh
                     });
                     log.info("-------------------------");
                 }
-            } catch (TimeoutException e) {
+            }
+            catch (TimeoutException e) {
                 log.error("Failed to describe topics {}", topicNames, e);
             }
         }
     }
+
 }

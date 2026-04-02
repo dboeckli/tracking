@@ -31,18 +31,14 @@ class KafkaConfigIT {
                 ListTopicsResult topicsResult = adminClient.listTopics();
                 Collection<TopicListing> topics = topicsResult.listings().get(5, TimeUnit.SECONDS);
 
-                assertThat(topics)
-                    .extracting(TopicListing::name)
-                    .contains(DISPATCH_TRACKING_TOPIC);
+                assertThat(topics).extracting(TopicListing::name).contains(DISPATCH_TRACKING_TOPIC);
             });
 
             await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
                 ListGroupsResult listGroupsResul = adminClient.listGroups(new ListGroupsOptions().timeoutMs(1000));
                 Collection<GroupListing> groups = listGroupsResul.all().get(5, TimeUnit.SECONDS);
 
-                assertThat(groups)
-                    .extracting(GroupListing::groupId)
-                    .contains(DISPATCH_TRACKING_TOPIC_GROUP);
+                assertThat(groups).extracting(GroupListing::groupId).contains(DISPATCH_TRACKING_TOPIC_GROUP);
             });
         }
     }

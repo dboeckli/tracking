@@ -56,6 +56,7 @@ public class DispatchTrackingHandlerWithEmbeddedKafkaTest {
 
     @TestConfiguration
     static class TestConfig {
+
         @Bean
         public KafkaTestDispatchTrackingTopicListener testListenerDispatchTrackingTopic() {
             return new KafkaTestDispatchTrackingTopicListener();
@@ -70,6 +71,7 @@ public class DispatchTrackingHandlerWithEmbeddedKafkaTest {
 
     @KafkaListener(groupId = "KafkaIntegrationTest", topics = TRACKING_STATUS_TOPIC)
     protected static class KafkaTestTrackingStatusTopicListener {
+
         AtomicInteger trackingStatusUpdatedCounter = new AtomicInteger(0);
 
         @KafkaHandler
@@ -82,7 +84,9 @@ public class DispatchTrackingHandlerWithEmbeddedKafkaTest {
 
     @KafkaListener(groupId = "KafkaIntegrationTest", topics = DISPATCH_TRACKING_TOPIC)
     protected static class KafkaTestDispatchTrackingTopicListener {
+
         AtomicInteger dispatchPreparingCounter = new AtomicInteger(0);
+
         AtomicInteger dispatchCompletedCounter = new AtomicInteger(0);
 
         @KafkaHandler
@@ -96,55 +100,54 @@ public class DispatchTrackingHandlerWithEmbeddedKafkaTest {
             log.info("Received DispatchCompleted: " + payload);
             dispatchCompletedCounter.incrementAndGet();
         }
+
     }
 
     @BeforeEach
     public void setUp() {
         testListenerTrackStatusTopic.trackingStatusUpdatedCounter.set(0);
-        
+
         testListenerDispatchTrackingTopic.dispatchPreparingCounter.set(0);
         testListenerDispatchTrackingTopic.dispatchCompletedCounter.set(0);
 
         // Wait until the partitions are assigned.
-        registry.getListenerContainers().forEach(container ->
-            ContainerTestUtils.waitForAssignment(container, embeddedKafkaBroker.getPartitionsPerTopic()));
+        registry.getListenerContainers()
+            .forEach(container -> ContainerTestUtils.waitForAssignment(container,
+                    embeddedKafkaBroker.getPartitionsPerTopic()));
     }
-    
+
     @Test
     public void testOrderCreatedHandlerForDispatchPreparing() throws Exception {
-        DispatchPreparing givenDispatchPreparing = DispatchPreparing.builder()
-            .orderId(UUID.randomUUID())
-            .build();
-        
+        DispatchPreparing givenDispatchPreparing = DispatchPreparing.builder().orderId(UUID.randomUUID()).build();
+
         sendMessage(DISPATCH_TRACKING_TOPIC, givenDispatchPreparing);
 
-        await().atMost(3, TimeUnit.SECONDS).pollDelay(100, TimeUnit.MILLISECONDS)
+        await().atMost(3, TimeUnit.SECONDS)
+            .pollDelay(100, TimeUnit.MILLISECONDS)
             .until(testListenerTrackStatusTopic.trackingStatusUpdatedCounter::get, equalTo(1));
 
-        await().atMost(1, TimeUnit.SECONDS).pollDelay(100, TimeUnit.MILLISECONDS)
+        await().atMost(1, TimeUnit.SECONDS)
+            .pollDelay(100, TimeUnit.MILLISECONDS)
             .until(testListenerDispatchTrackingTopic.dispatchPreparingCounter::get, equalTo(1));
     }
 
     @Test
     public void testOrderCreatedHandlerForDispatchCompleted() throws Exception {
-        DispatchCompleted givenDispatchCompleted = DispatchCompleted.builder()
-            .orderId(UUID.randomUUID())
-            .build();
+        DispatchCompleted givenDispatchCompleted = DispatchCompleted.builder().orderId(UUID.randomUUID()).build();
 
         sendMessage(DISPATCH_TRACKING_TOPIC, givenDispatchCompleted);
 
-        await().atMost(3, TimeUnit.SECONDS).pollDelay(100, TimeUnit.MILLISECONDS)
+        await().atMost(3, TimeUnit.SECONDS)
+            .pollDelay(100, TimeUnit.MILLISECONDS)
             .until(testListenerTrackStatusTopic.trackingStatusUpdatedCounter::get, equalTo(1));
 
-        await().atMost(1, TimeUnit.SECONDS).pollDelay(100, TimeUnit.MILLISECONDS)
+        await().atMost(1, TimeUnit.SECONDS)
+            .pollDelay(100, TimeUnit.MILLISECONDS)
             .until(testListenerDispatchTrackingTopic.dispatchCompletedCounter::get, equalTo(1));
     }
 
     private void sendMessage(String topic, Object data) throws Exception {
-        kafkaTemplate.send(MessageBuilder
-            .withPayload(data)
-            .setHeader(KafkaHeaders.TOPIC, topic)
-            .build()).get();
+        kafkaTemplate.send(MessageBuilder.withPayload(data).setHeader(KafkaHeaders.TOPIC, topic).build()).get();
     }
-    
+
 }
