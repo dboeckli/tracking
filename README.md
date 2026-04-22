@@ -7,8 +7,8 @@ The associated repository for the Dispatch Service can be found here:  [Dispatch
 The application code is for a message driven service which utilises Kafka and Spring Boot 3.
 
 This application can be tested in two way:
-1. Setting up local Kafka in Wsl (See [Kafka Setup Instructions](docs/Kafka.md)) and use the IntelliJ runner
-2. Use IntelliJ runner with docker profile which will start a docker Kafka instance via docker compose
+1. Setting up local Kafka in Wsl (See [Kafka Setup Instructions](docs/Kafka.md)) and use the IntelliJ runner.
+2. Use IntelliJ runner with docker profile which will start a docker Kafka instance via docker compose.
 
 Send Message:
 For that you need a kafka cli environment which will be available when you have done the kafka wsl setup
