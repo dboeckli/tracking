@@ -27,7 +27,7 @@ spring:
       stop:
         command: down
       skip:
-        in-tests: false  
+        in-tests: false
 
 management:
   health:
@@ -68,7 +68,6 @@ management:
       enabled: true
       include: request_headers, response_headers, session_id, time_taken
   observations:
-
     annotations:
       enabled: true
     http:
