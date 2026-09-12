@@ -2,8 +2,5 @@ cd target/helm/repo
 
 $file = Get-ChildItem -Filter tracking-chart-*.tgz | Select-Object -First 1
 $APPLICATION_NAME = Get-ChildItem -Directory | Where-Object { $_.LastWriteTime -ge $file.LastWriteTime } | Select-Object -ExpandProperty Name
-
-helm uninstall $APPLICATION_NAME --namespace tracking
-
-kubectl delete pod -n tracking --field-selector=status.phase==Succeeded
-kubectl delete pod -n tracking --field-selector=status.phase==Failed
+Write-Host "test application: $APPLICATION_NAME"
+helm test $APPLICATION_NAME --namespace tracking --logs

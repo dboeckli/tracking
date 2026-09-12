@@ -19,7 +19,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       # first is for internal communication, second for external communication which is exposing the port 29092 (see above in KAFKA_LISTENERS)
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://127.0.0.1:29092
       #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LOG_DIRS: /var/lib/kafka/data  # Where Kafka stores its logs.
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"  # Kafka will automatically create topics if needed.
@@ -50,7 +50,7 @@ services:
 
   dispatch-service:
     container_name: dispatch-service
-    image: domboeckli/dispatch:0.0.2-SNAPSHOT
+    image: domboeckli/dispatch:0.0.2-snapshot
     ports:
       - "8082:8082"
     expose:
