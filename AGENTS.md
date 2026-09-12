@@ -23,7 +23,7 @@ Siehe README.md für Build-/Kubernetes-/Helm-Anleitung.
 - Maven-Auflösung nutzt bei Mount `C:\development\maven-repo:ro` den Host-Cache; GitHub-Packages-Zugriff
   (`github-maven`-Secret) läuft über den Kit-Proxy. Nur echte Maven-Builds sind repräsentativ
   (`mvn dependency:get` ignoriert settings-`<proxies>`).
-- Formatting: shfmt `3.13.1` (Spotless `<shfmt>` + CI `mfinelli/setup-shfmt@v4`).
+- Formatting: shfmt `3.14.1` (Spotless `<shfmt>` + CI `mfinelli/setup-shfmt@v4`).
 
 ## Hinweise
 

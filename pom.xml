@@ -296,7 +296,7 @@
               <exclude>**/node_modules/**</exclude>
             </excludes>
             <shfmt>
-              <version>3.13.1</version>
+              <version>3.14.1</version>
             </shfmt>
           </shell>
         </configuration>
@@ -595,9 +595,9 @@
             <configuration>
               <skip>${skip.start.stop.springboot}</skip>
               <wait>2000</wait>
-              <!-- 1000 milliseconds is default -->
-              <maxAttempts>120</maxAttempts>
-              <!-- 30 attempts is default, combined with wait it results to 30 sec. We wait 60 seconds. -->
+              <!-- 500 milliseconds is default -->
+              <maxAttempts>300</maxAttempts>
+              <!-- 60 attempts is default; 300 x 2000ms = 600s (10 min) to cover Docker Compose image pulls and Kafka startup -->
               <profiles>docker</profiles>
               <arguments>
                 <argument>-Xmx1024m</argument>

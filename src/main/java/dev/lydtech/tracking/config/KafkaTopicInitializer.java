@@ -39,7 +39,7 @@ public class KafkaTopicInitializer implements ApplicationListener<ContextRefresh
             for (NewTopic topic : topics) {
                 log.info("Creating Topic: {}", topic.name());
                 try {
-                    adminClient.createTopics(List.of(topic)).all().get(30, TimeUnit.SECONDS);
+                    adminClient.createTopics(List.of(topic)).all().get(60, TimeUnit.SECONDS);
                     log.info("Topic created successfully: {}", topic.name());
                 }
                 catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -65,7 +65,7 @@ public class KafkaTopicInitializer implements ApplicationListener<ContextRefresh
             List<String> topicNames = topics.stream().map(NewTopic::name).toList();
 
             log.info("### Waiting for topics to be created: {}", topicNames);
-            await().atMost(30, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> {
+            await().atMost(120, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> {
                 try {
                     DescribeTopicsResult resultCheck = adminClient.describeTopics(topicNames);
                     Map<String, TopicDescription> descriptions = resultCheck.allTopicNames().get(5, TimeUnit.SECONDS);
