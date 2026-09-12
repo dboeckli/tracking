@@ -4,9 +4,33 @@ This repository contains the code to support the [Introduction to Kafka with Spr
 
 The associated repository for the Dispatch Service can be found here:  [Dispatch Service Repository](https://github.com/dboeckli/dispatch)
 
-The application code is for a message driven service which utilises Kafka and Spring Boot 3.
+The application code is for a message driven service which utilises Kafka and Spring Boot 4.
 
-This application can be tested in two way:
+## Architecture Overview
+
+```mermaid
+graph LR
+    Dispatch(["🚚 Dispatch Service"])
+
+    subgraph Messaging ["Messaging"]
+        Kafka{{"Kafka"}}
+    end
+
+    subgraph Tracking ["Tracking Service"]
+        App["Spring Boot\n:8081 · NodePort 30081"]
+    end
+
+    Consumer(["📊 Tracking Consumer"])
+
+    Dispatch -->|"dispatch.tracking"| Kafka
+    Kafka -->|"DispatchPreparing / DispatchCompleted"| App
+    App -->|"tracking.status"| Kafka
+    Kafka -->|"TrackingStatusUpdated"| Consumer
+```
+
+## Testing
+
+This application can be tested in two ways:
 1. Setting up local Kafka in Wsl (See [Kafka Setup Instructions](docs/Kafka.md)) and use the IntelliJ runner.
 2. Use IntelliJ runner with docker profile which will start a docker Kafka instance via docker compose.
 
@@ -51,7 +75,7 @@ docker exec -it kafka /bin/bash
 Terminal 1: start a consumer
 
 ```
-./kafka-console-consumer --bootstrap-server localhost:9092 --topic dispatch.tracking --from-beginning --property print.headers=true
+/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic dispatch.tracking --from-beginning --property print.headers=true
 ```
 
 Terminal 2: send a DispatchPreparing-Message to topic dispatch.tracking
@@ -83,10 +107,10 @@ Be aware that we are using a different namespace here (not default).
 To run maven filtering for destination target/helm
 
 ```bash
-mvn clean install -DskipTests 
+./mvnw clean install -Dskip.start.stop.springboot=true
 ```
 
-Go to the directory where the tgz file has been created after 'mvn install'
+Go to the directory where the tgz file has been created after './mvnw install'
 
 ```powershell
 cd target/helm/repo
@@ -95,7 +119,7 @@ cd target/helm/repo
 unpack
 
 ```powershell
-$file = Get-ChildItem -Filter tracking-v*.tgz | Select-Object -First 1
+$file = Get-ChildItem -Filter tracking-chart-*.tgz | Select-Object -First 1
 tar -xvf $file.Name
 ```
 
@@ -139,7 +163,7 @@ kubectl delete all --all -n tracking
 create busybox sidecar
 
 ```powershell
-kubectl run busybox-test --rm -it --image=busybox:1.36 --namespace=tracking --command -- sh
+kubectl run busybox-test --rm -it --image=busybox:1.38.0 --namespace=tracking --command -- sh
 ```
 
 and analyze kafka connections
@@ -151,10 +175,10 @@ nc -zv tracking-kafka.tracking.svc.cluster.local 29092
 echo "Exit code for port 29092: $?"
 ```
 
-create bitnami/kafka sidecar and open bash
+create bitnamilegacy/kafka sidecar and open bash
 
 ```powershell
-kubectl run kafka-test --rm -it --image=bitnami/kafka:3.9.0 --namespace=tracking --command -- bash
+kubectl run kafka-test --rm -it --image=bitnamilegacy/kafka:3.9.0 --namespace=tracking --command -- bash
 ```
 
 run kafka commands
