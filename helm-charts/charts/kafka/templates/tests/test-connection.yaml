@@ -16,12 +16,25 @@ spec:
       args:
         - |
           ERROR_OCCURED=0
+          MAX_ATTEMPTS=10
+          SLEEP_SECONDS=3
+          BOOTSTRAP="{{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }}"
 
           echo "### Test 1: Checking Kafka broker status"
-          /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --list
-          rc=$?
+          attempt=1
+          rc=1
+          while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
+            /opt/kafka/bin/kafka-topics.sh --bootstrap-server "$BOOTSTRAP" --list
+            rc=$?
+            if [ "$rc" -eq 0 ]; then
+              break
+            fi
+            echo "Attempt ${attempt}/${MAX_ATTEMPTS} failed (rc=${rc}); retrying in ${SLEEP_SECONDS}s..."
+            attempt=$((attempt + 1))
+            sleep "$SLEEP_SECONDS"
+          done
           echo "Exit code: ${rc}"
-          if [ $rc -ne 0 ]; then
+          if [ "$rc" -ne 0 ]; then
             echo "Failed to connect to Kafka broker"
             ERROR_OCCURED=1
           else
@@ -29,10 +42,10 @@ spec:
           fi
 
           echo "### Test 2: Creating a test topic"
-          /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --create --topic test-topic --partitions 1 --replication-factor 1
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server "$BOOTSTRAP" --create --if-not-exists --topic test-topic --partitions 1 --replication-factor 1
           rc=$?
           echo "Exit code: ${rc}"
-          if [ $rc -ne 0 ]; then
+          if [ "$rc" -ne 0 ]; then
             echo "Failed to create test topic"
             ERROR_OCCURED=1
           else
@@ -40,17 +53,17 @@ spec:
           fi
 
           echo "### Test 3: Listing topics to verify test topic creation"
-          /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --list | grep test-topic
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server "$BOOTSTRAP" --list | grep test-topic
           rc=$?
           echo "Exit code: ${rc}"
-          if [ $rc -ne 0 ]; then
+          if [ "$rc" -ne 0 ]; then
             echo "Test topic not found in the list"
             ERROR_OCCURED=1
           else
             echo "Test topic successfully created and listed"
           fi
 
-          if [ $ERROR_OCCURED -ne 0 ]; then
+          if [ "$ERROR_OCCURED" -ne 0 ]; then
             echo "### Kafka connection test failed"
             exit 1
           else

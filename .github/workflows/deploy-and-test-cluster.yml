@@ -105,8 +105,11 @@ jobs:
 
           echo "::group::Helm Test Raw Output"
           echo "Testing Application $APPLICATION_NAME: $APP_VERSION"
+          # Do not let the runner's `set -e` abort before the test output is printed.
+          set +e
           TEST_OUTPUT=$(helm test $APPLICATION_NAME --namespace ${NAMESPACE} --logs)
           TEST_EXIT_CODE=$?
+          set -e
           echo "Exit Code: $TEST_EXIT_CODE"
           echo "$TEST_OUTPUT"
           echo "::endgroup::"

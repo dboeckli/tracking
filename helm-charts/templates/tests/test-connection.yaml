@@ -16,24 +16,41 @@ spec:
       args:
         - |
           ERROR_OCCURED=0
+          MAX_ATTEMPTS=10
+          SLEEP_SECONDS=3
 
-          echo "### Test 1: Checking health endpoint using service short name: {{ include "application-template.fullname" . }}"
-          wget -O- -q {{ include "application-template.fullname" . }}:{{ .Values.service.port }}/actuator/health
-          rc=$?
-          echo "Exit code: ${rc}"
-          if [ $rc -ne 0 ]; then
+          check_health() {
+            LABEL="$1"
+            URL="$2"
+            echo "### Checking health endpoint (${LABEL}): ${URL}"
+            attempt=1
+            rc=1
+            while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
+              wget -O- -q "$URL"
+              rc=$?
+              if [ "$rc" -eq 0 ]; then
+                echo "Exit code: ${rc}"
+                return 0
+              fi
+              echo "Attempt ${attempt}/${MAX_ATTEMPTS} failed (rc=${rc}); retrying in ${SLEEP_SECONDS}s..."
+              attempt=$((attempt + 1))
+              sleep "$SLEEP_SECONDS"
+            done
+            echo "Exit code: ${rc}"
+            return 1
+          }
+
+          if ! check_health "service short name: {{ include "application-template.fullname" . }}" \
+            "{{ include "application-template.fullname" . }}:{{ .Values.service.port }}/actuator/health"; then
             ERROR_OCCURED=1
           fi
 
-          echo "### Test 2: Checking health endpoint using fully qualified domain name (FQDN): {{ include "application-template.serviceFQDN" . }}"
-          wget -O- -q {{ include "application-template.serviceFQDN" . }}:{{ .Values.service.port }}/actuator/health
-          rc=$?
-          echo "Exit code: ${rc}"
-          if [ $rc -ne 0 ]; then
+          if ! check_health "FQDN: {{ include "application-template.serviceFQDN" . }}" \
+            "{{ include "application-template.serviceFQDN" . }}:{{ .Values.service.port }}/actuator/health"; then
             ERROR_OCCURED=1
           fi
 
-          if [ $ERROR_OCCURED -ne 0 ]; then
+          if [ "$ERROR_OCCURED" -ne 0 ]; then
             # Print DNS configuration
             echo "### DNS Configuration:"
             cat /etc/resolv.conf || true
