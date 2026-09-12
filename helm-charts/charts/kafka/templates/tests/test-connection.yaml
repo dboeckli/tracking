@@ -19,8 +19,9 @@ spec:
 
           echo "### Test 1: Checking Kafka broker status"
           /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --list
-          echo "Exit code: $?"
-          if [ $? -ne 0 ]; then
+          rc=$?
+          echo "Exit code: ${rc}"
+          if [ $rc -ne 0 ]; then
             echo "Failed to connect to Kafka broker"
             ERROR_OCCURED=1
           else
@@ -29,8 +30,9 @@ spec:
 
           echo "### Test 2: Creating a test topic"
           /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --create --topic test-topic --partitions 1 --replication-factor 1
-          echo "Exit code: $?"
-          if [ $? -ne 0 ]; then
+          rc=$?
+          echo "Exit code: ${rc}"
+          if [ $rc -ne 0 ]; then
             echo "Failed to create test topic"
             ERROR_OCCURED=1
           else
@@ -39,8 +41,9 @@ spec:
 
           echo "### Test 3: Listing topics to verify test topic creation"
           /opt/kafka/bin/kafka-topics.sh --bootstrap-server {{ include "kafka.fullname" . }}:{{ .Values.kafka.clientPort }} --list | grep test-topic
-          echo "Exit code: $?"
-          if [ $? -ne 0 ]; then
+          rc=$?
+          echo "Exit code: ${rc}"
+          if [ $rc -ne 0 ]; then
             echo "Test topic not found in the list"
             ERROR_OCCURED=1
           else
