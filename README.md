@@ -30,75 +30,57 @@ graph LR
 
 ## Testing
 
-This application can be tested in two ways:
-1. Setting up local Kafka in Wsl (See [Kafka Setup Instructions](docs/Kafka.md)) and use the IntelliJ runner.
-2. Use IntelliJ runner with docker profile which will start a docker Kafka instance via docker compose.
+This application is tested with the IntelliJ runner using the `docker` profile, which starts a Docker Kafka
+instance via docker compose.
 
-Send Message:
-For that you need a kafka cli environment which will be available when you have done the kafka wsl setup
+> Alternative: lokale Kafka-Installation (siehe [Kafka Setup Instructions](docs/Kafka.md)).
 
-use at home:
+### Docker-Profil
 
-```
-cd ~/tools/kafka/kafka_2.13-3.9.0
-```
+In IntelliJ die Run-Config **`TrackingApplication with docker`** starten (aktives Profil `docker`). Über
+`spring-boot-docker-compose` startet `compose.yaml` automatisch Kafka, Wiremock und den Dispatch-Service. Kafka ist
+dann über `127.0.0.1:29092` erreichbar (siehe `src/main/resources/application-docker.yaml`).
 
-use at work:
+Topics auflisten:
 
-```
-cd /opt/development/tools/kafka/kafka_2.13-3.9.0
+```bash
+docker exec -it kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:29092 --list
 ```
 
-When started with docker profile use:
+Kafka-Shell öffnen:
 
-```
-bin/kafka-topics.sh --bootstrap-server localhost:29092 --list
-bin/kafka-topics.sh --bootstrap-server 127.0.0.1:29092 --list
-bin/kafka-topics.sh --bootstrap-server [::1]:29092 --list
-```
-
-Send a message to the dispatch.tracking topic
-
-```
-bin/kafka-console-producer.sh --bootstrap-server [::1]:9092 --topic dispatch.tracking
->{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"} 
-```
-
-When started with docker compose and kafka is up and running
-
-open shell of kafka container
-
-```
+```bash
 docker exec -it kafka /bin/bash
 ```
 
-Terminal 1: start a consumer
+Terminal 1: Consumer auf `dispatch.tracking` starten
 
-```
-/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic dispatch.tracking --from-beginning --property print.headers=true
-```
-
-Terminal 2: send a DispatchPreparing-Message to topic dispatch.tracking
-
-```
-echo '__TypeId__:dev.lydtech.message.DispatchPreparing|{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"}' | /usr/bin/kafka-console-producer \
-  --bootstrap-server localhost:9092 \
-  --topic dispatch.tracking \
-  --property parse.headers=true \
-  --property "headers.delimiter=|" \
-  --property "headers.key.separator=:"
+```bash
+/opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+  --topic dispatch.tracking --from-beginning --property print.headers=true
 ```
 
-Terminal 2: send a DispatchCompleted-Message to topic dispatch.tracking
+Terminal 2: `DispatchPreparing`-Event senden
 
+```bash
+echo '__TypeId__:dev.lydtech.message.DispatchPreparing|{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"}' \
+ | /usr/bin/kafka-console-producer --bootstrap-server localhost:9092 --topic dispatch.tracking \
+   --property parse.headers=true --property "headers.delimiter=|" --property "headers.key.separator=:"
 ```
-echo '__TypeId__:dev.lydtech.message.DispatchCompleted|{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"}' | /usr/bin/kafka-console-producer \
-  --bootstrap-server localhost:9092 \
-  --topic dispatch.tracking \
-  --property parse.headers=true \
-  --property "headers.delimiter=|" \
-  --property "headers.key.separator=:"
+
+Terminal 2: `DispatchCompleted`-Event senden
+
+```bash
+echo '__TypeId__:dev.lydtech.message.DispatchCompleted|{"orderId":"8ed0dc67-41a4-4468-81e1-960340d30c92"}' \
+ | /usr/bin/kafka-console-producer --bootstrap-server localhost:9092 --topic dispatch.tracking \
+   --property parse.headers=true --property "headers.delimiter=|" --property "headers.key.separator=:"
 ```
+
+Verifizieren:
+
+- Actuator: `http://localhost:8081/actuator/health` bzw. `/actuator/info`.
+- Trace/Baggage manuell auslösen: Requests aus `restRequest/actuator.http` (setzt `traceparent` und
+  `baggage: testBaggage=tracking`); Logs zeigen `[… traceId-spanId]` und `MDC={testBaggage=…}`.
 
 ### Deployment with Helm
 
