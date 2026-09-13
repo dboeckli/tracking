@@ -205,32 +205,35 @@ Sandbox starten (PowerShell) — **mehrzeilig**, mit `--static-mcp idea`, gepinn
 **read-only Host-Maven-Cache** (kein Neu-Download gecachter Dependencies):
 
 ```powershell
-sbx run opencode --name tracking `
-    --static-mcp idea `
+sbx run opencode `
     --kit "git+https://github.com/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" `
-    -t docker/sandbox-templates:opencode-docker-0.5.0 `
-    "C:\development\projects\tracking" `
-    "$env:USERPROFILE\.kube:ro" `       # optional: Kubernetes (kubectl/helm im Docker-Desktop-Cluster)
-    "C:\development\maven-repo:ro"      # read-only Host-Maven-Cache (kein Neu-Download gecachter Deps)
+    --template docker/sandbox-templates:opencode-docker-0.5.0 `
+    --no-share-skills `
+    --static-mcp idea `
+    . `
+    "$env:USERPROFILE\.kube:ro" `
+    "C:\development\maven-repo:ro"
 ```
 
 Claude-Variante (Home):
 
 ```powershell
-sbx run claude --name tracking `
-    --static-mcp idea `
+sbx run claude `
     --kit "git+https://github.com/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" `
-    -t docker/sandbox-templates:claude-code-docker-0.5.0 `
-    "C:\development\projects\tracking" `
+    --template docker/sandbox-templates:claude-code-docker-0.5.0 `
+    --no-share-skills `
+    --static-mcp idea `
+    . `
     "C:\development\maven-repo:ro"
 ```
 
-Mammouth (Template-Pin steckt im spec-Image, kein `-t`):
+Mammouth (Template-Pin steckt im spec-Image, kein `--template`):
 
 ```powershell
-sbx run mammouth --name tracking `
+sbx run mammouth `
     --kit "git+https://github.com/dboeckli/opencode-sandbox-kit.git#dir=mammouth-agent" `
-    "C:\development\projects\tracking" `
+    --no-share-skills `
+    . `
     "C:\development\maven-repo:ro"
 ```
 
