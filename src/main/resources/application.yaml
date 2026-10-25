@@ -99,6 +99,14 @@ management:
     sampling:
       probability: 1.0
 
+appconfig:
+  request-logging:
+    # set to false to remove the request logging filter from the chain entirely
+    enabled: true
+    # request URI prefixes that are not logged
+    exclude-paths:
+      - /actuator/health
+
 logging:
   level:
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    dev.lydtech.tracking.config.RequestLoggingFilter: DEBUG
