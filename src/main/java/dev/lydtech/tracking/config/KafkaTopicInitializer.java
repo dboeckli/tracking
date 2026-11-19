@@ -42,7 +42,11 @@ public class KafkaTopicInitializer implements ApplicationListener<ContextRefresh
                     adminClient.createTopics(List.of(topic)).all().get(60, TimeUnit.SECONDS);
                     log.info("Topic created successfully: {}", topic.name());
                 }
-                catch (InterruptedException | ExecutionException | TimeoutException e) {
+                catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.error("Interrupted while creating topic {}", topic.name(), e);
+                }
+                catch (ExecutionException | TimeoutException e) {
                     if (e.getCause() instanceof TopicExistsException) {
                         log.warn("### Topic '{}'", e.getMessage());
                     }
@@ -55,7 +59,11 @@ public class KafkaTopicInitializer implements ApplicationListener<ContextRefresh
         try {
             showTopicDetails();
         }
-        catch (ExecutionException | InterruptedException e) {
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Interrupted while checking Kafka topics", e);
+        }
+        catch (ExecutionException e) {
             log.error("Error checking Kafka topics", e);
         }
     }
@@ -70,6 +78,11 @@ public class KafkaTopicInitializer implements ApplicationListener<ContextRefresh
                     DescribeTopicsResult resultCheck = adminClient.describeTopics(topicNames);
                     Map<String, TopicDescription> descriptions = resultCheck.allTopicNames().get(5, TimeUnit.SECONDS);
                     return descriptions.size() == topicNames.size();
+                }
+                catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.warn("Topics not yet available: {}", e.getMessage());
+                    return false;
                 }
                 catch (Exception e) {
                     log.warn("Topics not yet available: {}", e.getMessage());
