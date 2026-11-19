@@ -83,7 +83,7 @@ public class DispatchTrackingHandlerIT {
     }
 
     @Test
-    public void testOrderCreatedHandlerForDispatchPreparedMessage() {
+    void testOrderCreatedHandlerForDispatchPreparedMessage() {
         DispatchPreparing givenDispatchPreparing = DispatchPreparing.builder().orderId(UUID.randomUUID()).build();
 
         assertDoesNotThrow(() -> {
@@ -104,7 +104,7 @@ public class DispatchTrackingHandlerIT {
     }
 
     @Test
-    public void testOrderCreatedHandlerForDispatchCompletedMessage() {
+    void testOrderCreatedHandlerForDispatchCompletedMessage() {
         DispatchCompleted givenDispatchCompleted = DispatchCompleted.builder().orderId(UUID.randomUUID()).build();
 
         assertDoesNotThrow(() -> {
@@ -133,15 +133,15 @@ public class DispatchTrackingHandlerIT {
         assertFalse(records.isEmpty() || records.count() == 0,
                 "Expected DispatchPreparing records, but none were received");
 
-        ConsumerRecord<String, DispatchPreparing> record = null;
+        ConsumerRecord<String, DispatchPreparing> matchingRecord = null;
         for (ConsumerRecord<String, DispatchPreparing> r : records) {
             if (r.value() instanceof DispatchPreparing) {
-                record = r;
+                matchingRecord = r;
                 break;
             }
         }
-        assertNotNull(record, "DispatchPreparing record is null");
-        DispatchPreparing orderDispatchPreparing = record.value();
+        assertNotNull(matchingRecord, "DispatchPreparing record is null");
+        DispatchPreparing orderDispatchPreparing = matchingRecord.value();
 
         assertNotNull(orderDispatchPreparing, "DispatchPreparing message is null");
         return orderDispatchPreparing.getOrderId();
@@ -156,15 +156,15 @@ public class DispatchTrackingHandlerIT {
         assertFalse(records.isEmpty() || records.count() == 0,
                 "Expected DispatchCompleted records, but none were received");
 
-        ConsumerRecord<String, DispatchCompleted> record = null;
+        ConsumerRecord<String, DispatchCompleted> matchingRecord = null;
         for (ConsumerRecord<String, DispatchCompleted> r : records) {
             if (r.value() instanceof DispatchCompleted) {
-                record = r;
+                matchingRecord = r;
                 break;
             }
         }
-        assertNotNull(record, "DispatchCompleted record is null");
-        DispatchCompleted orderDispatchCompleted = record.value();
+        assertNotNull(matchingRecord, "DispatchCompleted record is null");
+        DispatchCompleted orderDispatchCompleted = matchingRecord.value();
 
         assertNotNull(orderDispatchCompleted, "DispatchCompleted message is null");
         return orderDispatchCompleted.getOrderId();
@@ -178,12 +178,12 @@ public class DispatchTrackingHandlerIT {
         assertFalse(records.isEmpty() || records.count() == 0,
                 "Expected TrackingStatusUpdated records, but none were received");
 
-        ConsumerRecord<String, TrackingStatusUpdated> record = null;
+        ConsumerRecord<String, TrackingStatusUpdated> matchingRecord = null;
         for (ConsumerRecord<String, TrackingStatusUpdated> r : records) {
-            record = r;
+            matchingRecord = r;
         }
-        assertNotNull(record, "TrackingStatusUpdated record is null");
-        TrackingStatusUpdated trackingStatusUpdated = record.value();
+        assertNotNull(matchingRecord, "TrackingStatusUpdated record is null");
+        TrackingStatusUpdated trackingStatusUpdated = matchingRecord.value();
 
         assertNotNull(trackingStatusUpdated, "TrackingStatusUpdated message is null");
         return trackingStatusUpdated.getOrderId();

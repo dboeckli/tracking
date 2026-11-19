@@ -34,6 +34,10 @@ public class DispatchTrackingHandler {
         try {
             trackingService.processDispatchPreparing(dispatchPreparing);
         }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Interrupted processing payload {}", dispatchPreparing, e);
+        }
         catch (Exception e) {
             log.error("Error processing payload {}", dispatchPreparing, e);
         }
@@ -44,6 +48,10 @@ public class DispatchTrackingHandler {
         log.info("Received dispatchCompleted tracking message: {}", dispatchCompleted);
         try {
             trackingService.processDispatchCompleted(dispatchCompleted);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Interrupted processing payload {}", dispatchCompleted, e);
         }
         catch (Exception e) {
             log.error("Error processing payload {}", dispatchCompleted, e);
