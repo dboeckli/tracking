@@ -6,21 +6,21 @@ env:
 on:
   workflow_dispatch:
 
-permissions: write-all
-
 jobs:
-  
+
   check-branch:
     name: Check Branch
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
 
       - name: Checkout project
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
-      - uses: mfinelli/setup-shfmt@v4
+      - uses: mfinelli/setup-shfmt@a25fda4c1fe115aec0f85e04126610841bc3141d # v4
         with:
           shfmt-version: 3.14.1
 
@@ -38,15 +38,17 @@ jobs:
   check-maven-version:
     name: Check maven Version
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: read
+
     steps:
 
       - name: Checkout project
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
-      - uses: mfinelli/setup-shfmt@v4
+      - uses: mfinelli/setup-shfmt@a25fda4c1fe115aec0f85e04126610841bc3141d # v4
         with:
           shfmt-version: 3.14.1
 
@@ -65,21 +67,24 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     needs: [ check-branch, check-maven-version ]
+    permissions:
+      contents: write
+      packages: write
     steps:
 
       - name: Checkout project
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # requires admin gitHub token which can do merge on master
           token: ${{ secrets.RELEASE_TOKEN }} 
           fetch-depth: 0
 
-      - uses: mfinelli/setup-shfmt@v4
+      - uses: mfinelli/setup-shfmt@a25fda4c1fe115aec0f85e04126610841bc3141d # v4
         with:
           shfmt-version: 3.14.1
 
       - name: Set up java
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'liberica'
@@ -88,7 +93,7 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.15.2
+        uses: helm/kind-action@ea822c7bf1874f08e5a491df991c228edffc3376 # v1.15.2
 
       - name: View settings.xml
         run: | 

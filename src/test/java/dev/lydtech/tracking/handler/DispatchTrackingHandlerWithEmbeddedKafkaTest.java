@@ -104,7 +104,7 @@ public class DispatchTrackingHandlerWithEmbeddedKafkaTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         testListenerTrackStatusTopic.trackingStatusUpdatedCounter.set(0);
 
         testListenerDispatchTrackingTopic.dispatchPreparingCounter.set(0);
@@ -117,7 +117,7 @@ public class DispatchTrackingHandlerWithEmbeddedKafkaTest {
     }
 
     @Test
-    public void testOrderCreatedHandlerForDispatchPreparing() throws Exception {
+    void testOrderCreatedHandlerForDispatchPreparing() throws Exception {
         DispatchPreparing givenDispatchPreparing = DispatchPreparing.builder().orderId(UUID.randomUUID()).build();
 
         sendMessage(DISPATCH_TRACKING_TOPIC, givenDispatchPreparing);
@@ -132,7 +132,7 @@ public class DispatchTrackingHandlerWithEmbeddedKafkaTest {
     }
 
     @Test
-    public void testOrderCreatedHandlerForDispatchCompleted() throws Exception {
+    void testOrderCreatedHandlerForDispatchCompleted() throws Exception {
         DispatchCompleted givenDispatchCompleted = DispatchCompleted.builder().orderId(UUID.randomUUID()).build();
 
         sendMessage(DISPATCH_TRACKING_TOPIC, givenDispatchCompleted);

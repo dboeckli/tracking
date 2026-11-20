@@ -25,15 +25,15 @@ class TrackingServiceTest {
     private TrackingService service;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         kafkaProducerMock = mock(KafkaTemplate.class);
         service = new TrackingService(kafkaProducerMock);
     }
 
     @Test
-    public void processDispatchPreparing_Success() throws Exception {
-        when(kafkaProducerMock.send(anyString(), any(TrackingStatusUpdated.class)))
-            .thenReturn(mock(CompletableFuture.class));
+    void processDispatchPreparing_Success() throws Exception {
+        CompletableFuture<TrackingStatusUpdated> sendResult = mock(CompletableFuture.class);
+        when(kafkaProducerMock.send(anyString(), any(TrackingStatusUpdated.class))).thenReturn(sendResult);
 
         DispatchPreparing testEvent = DispatchPreparing.builder().orderId(UUID.randomUUID()).build();
         service.processDispatchPreparing(testEvent);
@@ -42,7 +42,7 @@ class TrackingServiceTest {
     }
 
     @Test
-    public void processDispatchPreparing_throwsException() {
+    void processDispatchPreparing_throwsException() {
         String errorMessage = "dispatch preparing producer failure";
         doThrow(new RuntimeException(errorMessage)).when(kafkaProducerMock)
             .send(eq(TRACKING_STATUS_TOPIC), any(TrackingStatusUpdated.class));
@@ -55,9 +55,9 @@ class TrackingServiceTest {
     }
 
     @Test
-    public void processDispatchCompleted_Success() throws Exception {
-        when(kafkaProducerMock.send(anyString(), any(TrackingStatusUpdated.class)))
-            .thenReturn(mock(CompletableFuture.class));
+    void processDispatchCompleted_Success() throws Exception {
+        CompletableFuture<TrackingStatusUpdated> sendResult = mock(CompletableFuture.class);
+        when(kafkaProducerMock.send(anyString(), any(TrackingStatusUpdated.class))).thenReturn(sendResult);
 
         DispatchCompleted testEvent = DispatchCompleted.builder()
             .orderId(UUID.randomUUID())
@@ -69,7 +69,7 @@ class TrackingServiceTest {
     }
 
     @Test
-    public void processDispatchCompleted_throwsException() {
+    void processDispatchCompleted_throwsException() {
         String errorMessage = "dispatch completed producer failure";
         doThrow(new RuntimeException(errorMessage)).when(kafkaProducerMock)
             .send(eq(TRACKING_STATUS_TOPIC), any(TrackingStatusUpdated.class));

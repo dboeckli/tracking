@@ -55,9 +55,6 @@ public class TrackingConfiguration {
         config.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, true);
         config.put(JacksonJsonDeserializer.REMOVE_TYPE_INFO_HEADERS, false);
 
-        // config.put(JsonDeserializer.VALUE_DEFAULT_TYPE,
-        // MessageType.DISPATCH_PREPARING.getClazz().getName());
-
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
